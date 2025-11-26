@@ -4,6 +4,10 @@
 #include <string.h>
 #define RX_BUF_SIZE 690
 
+#define SSID	"No Devices Found..."
+#define SSID_PASSWORD	"24681012"
+#define SERVER_IP	"142.93.218.33"
+
 short timeout_flag=0;
 extern UART_HandleTypeDef huart6;
 int wifi_flag=0;
@@ -47,7 +51,7 @@ short int wifi_feedback(char sub[],uint16_t timeout)
 int wifi_init(void)
 {
 	enum wifi_cmd{AT,AT_RST,AT_CWMODE,AT_CWJAP,AT_CIFSR,AT_CIPMUX,AT_CIPMODE};
-	const char *const wifi_cmds[]={"AT\r\n","AT+RST\r\n","AT+CWMODE=3\r\n","AT+CWJAP=\"No Devices Found...\",\"24681012\"\r\n",
+	const char *const wifi_cmds[]={"AT\r\n","AT+RST\r\n","AT+CWMODE=3\r\n","AT+CWJAP=\""SSID"\",\""SSID_PASSWORD"\r\n",
 						"AT+CIFSR\r\n","AT+CIPMUX=0\r\n","AT+CIPMODE=0\r\n"};
 	int test=1;
 	int count=1;
@@ -70,10 +74,6 @@ int wifi_init(void)
 			{
 				HAL_GPIO_WritePin(GPIOB, RED_LED_Pin, GPIO_PIN_RESET); //clear 13th bit postion to turn ON red LED
 				HAL_GPIO_WritePin(GPIOB, GREEN_LED_Pin, GPIO_PIN_SET); //set 13th bit postion to turn OFF green LED
-//				KM_LCD_Write_Cmd(0xCA);
-//				KM_LCD_Write_Str("T.O: ");
-//				KM_LCD_Write_Cmd(0xcF);
-//				KM_LCD_Write_Data(count + '0');
 				HAL_Delay(1000);
 				count++;
 
@@ -100,8 +100,7 @@ int wifi_init(void)
 				ST7735_WriteString(10,86,"Wifi Connected",Font_6x8,ST7735_PURPLE,DISABLE);
 				HAL_Delay(500);
 				test=5;
-//				if(test==5)
-//					KM_LCD_Write_Str("..");
+
 			}
 			else if(wifi_flag==FAIL)
 			{
@@ -134,10 +133,6 @@ int wifi_init(void)
 			{
 				HAL_GPIO_WritePin(GPIOB, RED_LED_Pin, GPIO_PIN_RESET); //clear 13th bit postion to turn ON red LED
 				HAL_GPIO_WritePin(GPIOB, GREEN_LED_Pin, GPIO_PIN_SET); //set 13th bit postion to turn OFF green LED
-//				KM_LCD_Write_Cmd(0xCA);
-//				KM_LCD_Write_Str("T.O: ");
-//				KM_LCD_Write_Cmd(0xCF);
-//				KM_LCD_Write_Data(count + '0');
 				HAL_Delay(1000);
 				count++;
 			}
@@ -201,7 +196,7 @@ int8_t checkInt(void)
 int wifi_transmit(uint8_t *dht_buffer)
 {
 	char Fetch[50];
-	HAL_UART_Transmit(&huart6,(uint8_t *)"AT+CIPSTART=\"TCP\",\"142.93.218.33\",80\r\n",sizeof("AT+CIPSTART=\"TCP\",\"142.93.218.33\",80\r\n"),100);
+	HAL_UART_Transmit(&huart6,(uint8_t *)"AT+CIPSTART=\"TCP\",\""SERVER_IP"\",80\r\n",sizeof("AT+CIPSTART=\"TCP\",\"142.93.218.33\",80\r\n"),100);
 	osDelay(50);
 
 	snprintf(Fetch,50,"GET /page.php?temp=%02d.%1d&hum=%02d.%1d&dev=08\r\n\r\n",dht_buffer[2],dht_buffer[3],dht_buffer[0],dht_buffer[1]); //ESP8266_SendTcp // @suppress("Float formatting support")
