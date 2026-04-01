@@ -1,6 +1,7 @@
 #include "extra_tasks.h"
 #include "main.h"
 #include "stm32f4xx_hal_i2c.h"
+#include "fonts.h"
 extern I2C_HandleTypeDef hi2c1;
 int8_t dtBuf[7]={[DAY]=1,[DATE]=1,[MON]=1};
 uint8_t date_invalid_flag=0;

@@ -1,4 +1,4 @@
-
+#include"cmsis_os.h"
 #include "main.h"
 #include <stdio.h>
 #include <string.h>
@@ -196,7 +196,7 @@ int8_t checkInt(void)
 int wifi_transmit(uint8_t *dht_buffer)
 {
 	char Fetch[50];
-	HAL_UART_Transmit(&huart6,(uint8_t *)"AT+CIPSTART=\"TCP\",\""SERVER_IP"\",80\r\n",sizeof("AT+CIPSTART=\"TCP\",\"142.93.218.33\",80\r\n"),100);
+	HAL_UART_Transmit(&huart6,(uint8_t *)"AT+CIPSTART=\"TCP\",\""SERVER_IP"\",80\r\n",sizeof("AT+CIPSTART=\"TCP\",\""SERVER_IP"\",80\r\n"),100);
 	osDelay(50);
 
 	snprintf(Fetch,50,"GET /page.php?temp=%02d.%1d&hum=%02d.%1d&dev=08\r\n\r\n",dht_buffer[2],dht_buffer[3],dht_buffer[0],dht_buffer[1]); //ESP8266_SendTcp // @suppress("Float formatting support")
